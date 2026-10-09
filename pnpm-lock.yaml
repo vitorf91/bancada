@@ -63,6 +63,9 @@ importers:
         specifier: 'catalog:'
         version: 19.3.0(react@19.3.0)
     devDependencies:
+      '@bancada/protocol':
+        specifier: workspace:*
+        version: link:../../packages/protocol
       '@playwright/test':
         specifier: 1.64.0
         version: 1.64.0
@@ -133,10 +136,25 @@ importers:
       '@bancada/protocol':
         specifier: workspace:*
         version: link:../protocol
+      node-pty:
+        specifier: 1.1.0
+        version: 1.1.0
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 24.19.2
+      '@xterm/addon-serialize':
+        specifier: 0.14.0
+        version: 0.14.0
+      '@xterm/headless':
+        specifier: 6.0.0
+        version: 6.0.0
+      electron:
+        specifier: 44.7.0
+        version: 44.7.0
+      esbuild:
+        specifier: 0.25.12
+        version: 0.25.12
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
@@ -1009,6 +1027,9 @@ packages:
 
   '@vitest/spy@5.0.3':
     resolution: {integrity: sha512-XhFysQTB8AZ+P4gMi+Lpo99vg2AZi0qKpaB9yXQl37+CaMEAPO3iH/wGVnSyL5MPERiLezpqTVtrR6UZH5GCXg==}
+
+  '@xterm/addon-serialize@0.14.0':
+    resolution: {integrity: sha512-uteyTU1EkrQa2Ux6P/uFl2fzmXI46jy5uoQMKEOM0fKTyiW7cSn0WrFenHm5vO5uEXX/GpwW/FgILvv3r0WbkA==}
 
   '@xterm/headless@6.0.0':
     resolution: {integrity: sha512-5Yj1QINYCyzrZtf8OFIHi47iQtI+0qYFPHmouEfG8dHNxbZ9Tb9YGSuLcsEwj9Z+OL75GJqPyJbyoFer80a2Hw==}
@@ -1902,6 +1923,8 @@ snapshots:
       vite: 7.3.7(@types/node@24.19.2)
 
   '@vitest/spy@5.0.3': {}
+
+  '@xterm/addon-serialize@0.14.0': {}
 
   '@xterm/headless@6.0.0': {}
 
