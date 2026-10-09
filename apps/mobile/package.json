@@ -2,16 +2,23 @@
   "name": "@bancada/mobile",
   "version": "0.0.0",
   "private": true,
-  "description": "Phone companion PWA (skeleton).",
+  "description": "Phone companion PWA: pairing, sessions list, read view of a terminal, Web Push.",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "icons": "node scripts/icons.mjs",
+    "e2e": "vite build && playwright test",
+    "e2e:install": "playwright install webkit"
   },
   "dependencies": {
+    "@xterm/xterm": "6.0.0",
+    "lucide-react": "1.54.0",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "@fontsource-variable/geist": "5.3.0",
+    "@fontsource-variable/geist-mono": "5.3.0"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -19,6 +26,10 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "typescript": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "@playwright/test": "1.64.0",
+    "@bancada/pty-host": "workspace:*",
+    "@bancada/protocol": "workspace:*",
+    "esbuild": "0.25.12"
   }
 }

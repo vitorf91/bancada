@@ -2,17 +2,32 @@
   "name": "@bancada/server",
   "version": "0.0.0",
   "private": true,
-  "description": "HTTP/WebSocket API for the phone companion (skeleton).",
+  "description": "HTTP/WebSocket API for the phone companion, plus the local control socket for the CLI.",
   "type": "module",
   "exports": "./src/index.ts",
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "build": "node scripts/build.mjs",
+    "start": "node scripts/launch.mjs start",
+    "pair": "node scripts/launch.mjs pair",
+    "devices": "node scripts/launch.mjs devices",
+    "revoke": "node scripts/launch.mjs revoke",
+    "notify": "node scripts/launch.mjs notify"
   },
   "dependencies": {
-    "@bancada/protocol": "workspace:*"
+    "@bancada/protocol": "workspace:*",
+    "@bancada/pty-host": "workspace:*",
+    "qrcode": "1.5.4",
+    "web-push": "3.6.7",
+    "ws": "8.22.0"
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@types/qrcode": "1.5.6",
+    "@types/web-push": "3.6.4",
+    "@types/ws": "8.18.2",
+    "electron": "44.7.0",
+    "esbuild": "0.25.12",
     "typescript": "catalog:"
   }
 }

@@ -1,0 +1,745 @@
+{
+  "numTotalTestSuites": 20,
+  "numPassedTestSuites": 20,
+  "numFailedTestSuites": 0,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 60,
+  "numPassedTests": 60,
+  "numFailedTests": 0,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1791582232141,
+  "success": true,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["listeners"],
+          "fullName": "listeners binds the public API to 127.0.0.1 only",
+          "status": "passed",
+          "title": "binds the public API to 127.0.0.1 only",
+          "duration": 9.345708000000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["listeners"],
+          "fullName": "listeners puts the control socket in the data dir with mode 0600, and the control API is not on the TCP port",
+          "status": "passed",
+          "title": "puts the control socket in the data dir with mode 0600, and the control API is not on the TCP port",
+          "duration": 12.097207999999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["listeners"],
+          "fullName": "listeners refuses a second server on the same data dir and leaves the first one alone",
+          "status": "passed",
+          "title": "refuses a second server on the same data dir and leaves the first one alone",
+          "duration": 3.365791999999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["listeners"],
+          "fullName": "listeners replaces a socket file left behind by a dead server",
+          "status": "passed",
+          "title": "replaces a socket file left behind by a dead server",
+          "duration": 2.8125420000000076,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["authentication"],
+          "fullName": "authentication requires the cookie on every API route, and localhost is not a trust signal",
+          "status": "passed",
+          "title": "requires the cookie on every API route, and localhost is not a trust signal",
+          "duration": 3.7113339999999937,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["authentication"],
+          "fullName": "authentication serves the PWA shell without a cookie (it holds no data) with a restrictive CSP",
+          "status": "passed",
+          "title": "serves the PWA shell without a cookie (it holds no data) with a restrictive CSP",
+          "duration": 2.722082999999998,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["authentication"],
+          "fullName": "authentication pairs with a one-time code and sets an HttpOnly, Secure, SameSite=Strict, host-only cookie",
+          "status": "passed",
+          "title": "pairs with a one-time code and sets an HttpOnly, Secure, SameSite=Strict, host-only cookie",
+          "duration": 11.426792000000006,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["authentication"],
+          "fullName": "authentication rejects a bad code, a replayed code and an expired code",
+          "status": "passed",
+          "title": "rejects a bad code, a replayed code and an expired code",
+          "duration": 7.509749999999997,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["authentication"],
+          "fullName": "authentication rate limits pairing attempts (429 with Retry-After), even for a valid code",
+          "status": "passed",
+          "title": "rate limits pairing attempts (429 with Retry-After), even for a valid code",
+          "duration": 5.129333000000031,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["authentication"],
+          "fullName": "authentication refuses cross-origin state changes and requests with no Origin",
+          "status": "passed",
+          "title": "refuses cross-origin state changes and requests with no Origin",
+          "duration": 10.854458999999963,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["authentication"],
+          "fullName": "authentication logout revokes the calling device",
+          "status": "passed",
+          "title": "logout revokes the calling device",
+          "duration": 5.642082999999957,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["sessions API"],
+          "fullName": "sessions API lists sessions with title, cwd basename and last activity, and nothing sensitive",
+          "status": "passed",
+          "title": "lists sessions with title, cwd basename and last activity, and nothing sensitive",
+          "duration": 105.57666699999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["sessions API"],
+          "fullName": "sessions API answers 503 when the pty-host is down",
+          "status": "passed",
+          "title": "answers 503 when the pty-host is down",
+          "duration": 8.474499999999978,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["sessions API"],
+          "fullName": "sessions API exposes no kill, dispose, spawn or resize route",
+          "status": "passed",
+          "title": "exposes no kill, dispose, spawn or resize route",
+          "duration": 6.284167000000025,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["session stream (WebSocket)"],
+          "fullName": "session stream (WebSocket) refuses the upgrade without a valid cookie",
+          "status": "passed",
+          "title": "refuses the upgrade without a valid cookie",
+          "duration": 3.196957999999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["session stream (WebSocket)"],
+          "fullName": "session stream (WebSocket) sends a snapshot (scrollback 500), then live output, and relays input as typed",
+          "status": "passed",
+          "title": "sends a snapshot (scrollback 500), then live output, and relays input as typed",
+          "duration": 18.57041700000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["session stream (WebSocket)"],
+          "fullName": "session stream (WebSocket) has no resize, kill or dispose message, and bounds the input size",
+          "status": "passed",
+          "title": "has no resize, kill or dispose message, and bounds the input size",
+          "duration": 114.335959,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["session stream (WebSocket)"],
+          "fullName": "session stream (WebSocket) reports an unknown session and a session that exited",
+          "status": "passed",
+          "title": "reports an unknown session and a session that exited",
+          "duration": 56.46729200000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["session stream (WebSocket)"],
+          "fullName": "session stream (WebSocket) closes the socket and its host connection when the pty-host goes away",
+          "status": "passed",
+          "title": "closes the socket and its host connection when the pty-host goes away",
+          "duration": 4.8695410000000265,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["revocation"],
+          "fullName": "revocation closes every open socket of the device at once and frees its host connections",
+          "status": "passed",
+          "title": "closes every open socket of the device at once and frees its host connections",
+          "duration": 10.754540999999904,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["revocation"],
+          "fullName": "revocation input from a socket that was being revoked never reaches the pty",
+          "status": "passed",
+          "title": "input from a socket that was being revoked never reaches the pty",
+          "duration": 4.973625000000084,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["revocation"],
+          "fullName": "revocation also drops the device push subscription and survives a server restart",
+          "status": "passed",
+          "title": "also drops the device push subscription and survives a server restart",
+          "duration": 8.067040999999904,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["revocation"],
+          "fullName": "revocation rejects subscriptions that are not https endpoints",
+          "status": "passed",
+          "title": "rejects subscriptions that are not https endpoints",
+          "duration": 3.246458999999959,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1791582232387,
+      "endTime": 1791582232807.2463,
+      "status": "passed",
+      "message": "",
+      "name": "/private/tmp/claude-501/-Users-vitorferreira-Documents/982235eb-e79c-423a-b4da-f2b8612dba0a/scratchpad/wt/f0-phone/packages/server/src/api.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["BEL detection"],
+          "fullName": "BEL detection rings on a plain BEL",
+          "status": "passed",
+          "title": "rings on a plain BEL",
+          "duration": 1.2580410000000057,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BEL detection"],
+          "fullName": "BEL detection does not ring for the BEL that terminates an OSC title",
+          "status": "passed",
+          "title": "does not ring for the BEL that terminates an OSC title",
+          "duration": 0.19983299999999815,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BEL detection"],
+          "fullName": "BEL detection handles an OSC split across chunks",
+          "status": "passed",
+          "title": "handles an OSC split across chunks",
+          "duration": 0.14570900000001075,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BEL detection"],
+          "fullName": "BEL detection rings for a BEL right after an OSC, in the same chunk",
+          "status": "passed",
+          "title": "rings for a BEL right after an OSC, in the same chunk",
+          "duration": 0.10854199999999992,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BEL detection"],
+          "fullName": "BEL detection treats DCS/APC strings as opaque until ST",
+          "status": "passed",
+          "title": "treats DCS/APC strings as opaque until ST",
+          "duration": 0.13595799999998803,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BEL detection"],
+          "fullName": "BEL detection recovers from an unterminated string (CAN aborts it)",
+          "status": "passed",
+          "title": "recovers from an unterminated string (CAN aborts it)",
+          "duration": 0.08829200000000981,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BEL detection"],
+          "fullName": "BEL detection ignores bell-less escape sequences and CSI",
+          "status": "passed",
+          "title": "ignores bell-less escape sequences and CSI",
+          "duration": 0.07887499999999648,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BEL debounce"],
+          "fullName": "BEL debounce notifies once per 30 s per session, the first bell at once",
+          "status": "passed",
+          "title": "notifies once per 30 s per session, the first bell at once",
+          "duration": 0.16295799999998906,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["BEL debounce"],
+          "fullName": "BEL debounce the watcher combines detection and debounce, and ignores title changes",
+          "status": "passed",
+          "title": "the watcher combines detection and debounce, and ignores title changes",
+          "duration": 0.6565000000000083,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1791582232293,
+      "endTime": 1791582232296.6565,
+      "status": "passed",
+      "message": "",
+      "name": "/private/tmp/claude-501/-Users-vitorferreira-Documents/982235eb-e79c-423a-b4da-f2b8612dba0a/scratchpad/wt/f0-phone/packages/server/src/bell.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "expects the protocol version from @bancada/protocol",
+          "status": "passed",
+          "title": "expects the protocol version from @bancada/protocol",
+          "duration": 1.1709999999999923,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1791582232387,
+      "endTime": 1791582232388.171,
+      "status": "passed",
+      "message": "",
+      "name": "/private/tmp/claude-501/-Users-vitorferreira-Documents/982235eb-e79c-423a-b4da-f2b8612dba0a/scratchpad/wt/f0-phone/packages/server/src/index.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["server + real pty-host"],
+          "fullName": "server + real pty-host lists the host sessions",
+          "status": "passed",
+          "title": "lists the host sessions",
+          "duration": 15.064082999999982,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["server + real pty-host"],
+          "fullName": "server + real pty-host attaches over WebSocket: snapshot with scrollback, live stream, input echoed back",
+          "status": "passed",
+          "title": "attaches over WebSocket: snapshot with scrollback, live stream, input echoed back",
+          "duration": 557.63975,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["server + real pty-host"],
+          "fullName": "server + real pty-host serves two phones on the same session",
+          "status": "passed",
+          "title": "serves two phones on the same session",
+          "duration": 23.597625000000107,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["server + real pty-host"],
+          "fullName": "server + real pty-host never lets the phone resize the pty",
+          "status": "passed",
+          "title": "never lets the phone resize the pty",
+          "duration": 220.12999999999988,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["server + real pty-host"],
+          "fullName": "server + real pty-host pushes on BEL (debounced per session), not on an OSC title, and the payload decrypts",
+          "status": "passed",
+          "title": "pushes on BEL (debounced per session), not on an OSC title, and the payload decrypts",
+          "duration": 1727.8211669999998,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["server + real pty-host"],
+          "fullName": "server + real pty-host notify through the control socket reaches the subscription with a session title",
+          "status": "passed",
+          "title": "notify through the control socket reaches the subscription with a session title",
+          "duration": 3.1841670000003433,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["server + real pty-host"],
+          "fullName": "server + real pty-host reconnects its monitor (relaunching the host) after the pty-host dies",
+          "status": "passed",
+          "title": "reconnects its monitor (relaunching the host) after the pty-host dies",
+          "duration": 1217.1921660000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1791582232768,
+      "endTime": 1791582236533.1921,
+      "status": "passed",
+      "message": "",
+      "name": "/private/tmp/claude-501/-Users-vitorferreira-Documents/982235eb-e79c-423a-b4da-f2b8612dba0a/scratchpad/wt/f0-phone/packages/server/src/integration.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["pairing codes"],
+          "fullName": "pairing codes are 8 characters from the Crockford alphabet and expire after 5 minutes",
+          "status": "passed",
+          "title": "are 8 characters from the Crockford alphabet and expire after 5 minutes",
+          "duration": 2.709541999999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["pairing codes"],
+          "fullName": "pairing codes can be redeemed once",
+          "status": "passed",
+          "title": "can be redeemed once",
+          "duration": 2.812416999999982,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["pairing codes"],
+          "fullName": "pairing codes stop working at the expiry instant, and an expired attempt burns the code",
+          "status": "passed",
+          "title": "stop working at the expiry instant, and an expired attempt burns the code",
+          "duration": 1.5043329999999742,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["pairing codes"],
+          "fullName": "pairing codes accept what a person types: lowercase, no dash, O for 0, I or L for 1",
+          "status": "passed",
+          "title": "accept what a person types: lowercase, no dash, O for 0, I or L for 1",
+          "duration": 1.3599159999999983,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["pairing codes"],
+          "fullName": "pairing codes reject garbage without throwing",
+          "status": "passed",
+          "title": "reject garbage without throwing",
+          "duration": 0.7776250000000005,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["pairing codes"],
+          "fullName": "pairing codes rate limit failed attempts globally: after 5 in a minute even the right code is refused",
+          "status": "passed",
+          "title": "rate limit failed attempts globally: after 5 in a minute even the right code is refused",
+          "duration": 0.7813330000000178,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["pairing codes"],
+          "fullName": "pairing codes keeps at most 5 codes outstanding (the oldest is dropped)",
+          "status": "passed",
+          "title": "keeps at most 5 codes outstanding (the oldest is dropped)",
+          "duration": 1.5379590000000007,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["device store"],
+          "fullName": "device store stores only the sha256 of the token, in a 0600 file, with name and timestamps",
+          "status": "passed",
+          "title": "stores only the sha256 of the token, in a 0600 file, with name and timestamps",
+          "duration": 1.1336670000000026,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["device store"],
+          "fullName": "device store authenticates by token, updates last-seen, and survives a restart",
+          "status": "passed",
+          "title": "authenticates by token, updates last-seen, and survives a restart",
+          "duration": 2.1920410000000174,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["device store"],
+          "fullName": "device store revokes at once, notifies listeners, and resolves id prefixes",
+          "status": "passed",
+          "title": "revokes at once, notifies listeners, and resolves id prefixes",
+          "duration": 1.197874999999982,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["device store"],
+          "fullName": "device store sanitizes the device name",
+          "status": "passed",
+          "title": "sanitizes the device name",
+          "duration": 1.5640420000000006,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1791582232309,
+      "endTime": 1791582232327.564,
+      "status": "passed",
+      "message": "",
+      "name": "/private/tmp/claude-501/-Users-vitorferreira-Documents/982235eb-e79c-423a-b4da-f2b8612dba0a/scratchpad/wt/f0-phone/packages/server/src/pairing.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["push payload"],
+          "fullName": "push payload uses the session title, else the cwd basename; the url opens the session",
+          "status": "passed",
+          "title": "uses the session title, else the cwd basename; the url opens the session",
+          "duration": 1.819749999999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["push payload"],
+          "fullName": "push payload notify text: generic title without a session, session title with one, body capped",
+          "status": "passed",
+          "title": "notify text: generic title without a session, session title with one, body capped",
+          "duration": 0.8142500000000155,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["push payload"],
+          "fullName": "push payload validates subscriptions: https endpoint and base64url keys only",
+          "status": "passed",
+          "title": "validates subscriptions: https endpoint and base64url keys only",
+          "duration": 0.22479200000000787,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["VAPID keys"],
+          "fullName": "VAPID keys are generated once and reloaded from the file store (0600)",
+          "status": "passed",
+          "title": "are generated once and reloaded from the file store (0600)",
+          "duration": 1.2322080000000142,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["Keychain secret store"],
+          "fullName": "Keychain secret store stores the VAPID private key under service Bancada and reads it back",
+          "status": "passed",
+          "title": "stores the VAPID private key under service Bancada and reads it back",
+          "duration": 101.577833,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["push send path against a fake push endpoint"],
+          "fullName": "push send path against a fake push endpoint sends an encrypted payload with a valid VAPID JWT (ES256, aud, exp, sub, k)",
+          "status": "passed",
+          "title": "sends an encrypted payload with a valid VAPID JWT (ES256, aud, exp, sub, k)",
+          "duration": 13.490625000000023,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["push send path against a fake push endpoint"],
+          "fullName": "push send path against a fake push endpoint drops a subscription the push service reports as gone (410)",
+          "status": "passed",
+          "title": "drops a subscription the push service reports as gone (410)",
+          "duration": 3.6385420000000295,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["push send path against a fake push endpoint"],
+          "fullName": "push send path against a fake push endpoint counts other failures without dropping the subscription",
+          "status": "passed",
+          "title": "counts other failures without dropping the subscription",
+          "duration": 2.7111659999999915,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["push send path against a fake push endpoint"],
+          "fullName": "push send path against a fake push endpoint stores subscriptions in push.json (0600), one per device, and drops them with the device",
+          "status": "passed",
+          "title": "stores subscriptions in push.json (0600), one per device, and drops them with the device",
+          "duration": 1.1972499999999968,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1791582232325,
+      "endTime": 1791582232563.1973,
+      "status": "passed",
+      "message": "",
+      "name": "/private/tmp/claude-501/-Users-vitorferreira-Documents/982235eb-e79c-423a-b4da-f2b8612dba0a/scratchpad/wt/f0-phone/packages/server/src/push.test.ts"
+    }
+  ]
+}

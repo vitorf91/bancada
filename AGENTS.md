@@ -15,6 +15,7 @@ pnpm workspace (`pnpm-workspace.yaml`): `apps/desktop` (Electron + React), `apps
 
 - `pnpm check` always (typecheck, lint, test, build, failing fast). `pnpm format` fixes formatting and import order (Biome).
 - `pnpm --filter @bancada/desktop e2e` for any change to Electron or the UI. It builds the app, opens a real window and runs the Playwright smoke test. It is not part of `pnpm check` or CI yet.
+- `pnpm --filter @bancada/mobile e2e` for any change to the PWA or the server API. It builds the PWA, starts the real server and a pty-host on a `/tmp` data dir, and drives Playwright WebKit with an iPhone profile. It needs `pnpm --filter @bancada/mobile e2e:install` once (WebKit, set `PLAYWRIGHT_BROWSERS_PATH` to keep it out of `~/Library/Caches`). Not part of `pnpm check` or CI yet.
 - Do not skip or weaken a check to get green. A failing gate is fixed, or recorded with the command that reproduces it.
 
 ## Conventions
