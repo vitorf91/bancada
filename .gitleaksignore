@@ -1,0 +1,3 @@
+# False positive: the Sec-WebSocket-Key header nonce of a raw upgrade request in a test helper (commit bc1cbf7).
+# The helper now generates the nonce at runtime, so nothing of this shape is left in the tree.
+bc1cbf788307be256014f0efa18884e94975f748:packages/server/src/test-support/http.ts:generic-api-key:145

@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto'
 import http from 'node:http'
 import net from 'node:net'
 import { WebSocket } from 'ws'
@@ -142,7 +143,7 @@ export function rawUpgrade(port: number, target: string, cookie?: string): strin
     `Origin: http://127.0.0.1:${port}`,
     'Upgrade: websocket',
     'Connection: Upgrade',
-    'Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==',
+    `Sec-WebSocket-Key: ${randomBytes(16).toString('base64')}`,
     'Sec-WebSocket-Version: 13',
     ...(cookie ? [`Cookie: ${cookie}`] : []),
     '',
