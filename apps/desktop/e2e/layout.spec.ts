@@ -9,6 +9,7 @@ import {
   makeTempDir,
   readSavedBoard,
   savedOutline,
+  shutdownHost,
 } from './helpers.js'
 
 // Proof (c): drag a worktree to a pane edge, split, save the layout, restore it after a restart.
@@ -27,6 +28,8 @@ test.beforeEach(() => {
 
 test.afterEach(async () => {
   for (const app of apps.splice(0)) await app.close().catch(() => undefined)
+  // Dropping a worktree starts a shell in the pty-host, which outlives the app: end it with the test.
+  await shutdownHost(dataDir, 5000)
   await rm(fixture.root, { recursive: true, force: true })
   await rm(dataDir, { recursive: true, force: true })
 })
@@ -117,16 +120,22 @@ test('dragging worktrees onto pane edges splits the board, and the layout surviv
   expect(below[1]?.y ?? 0).toBeGreaterThanOrEqual((below[0]?.y ?? 0) + (below[0]?.height ?? 0) - 1)
   expect(Math.abs((below[0]?.x ?? 0) - (below[1]?.x ?? 1000))).toBeLessThan(2)
 
-  // The placeholders carry product color, project, worktree and branch.
+  // The panels are terminals whose header carries product color, worktree and, when it adds information, the branch.
   const alpha = panels(page).filter({ hasText: 'alpha' })
   await expect(alpha.getByTestId('panel-worktree')).toHaveText('alpha')
   await expect(alpha.getByTestId('panel-branch')).toContainText('main')
-  await expect(alpha.getByTestId('panel-project')).toHaveText('labs')
-  await expect(alpha).toHaveCSS('border-top-color', 'rgb(229, 115, 74)')
+  await expect(alpha).toHaveAttribute('data-project', 'labs')
+  await expect(alpha.getByTestId('panel-status')).toHaveText('shell')
+  await expect(alpha.locator('.term-panel__swatch')).toHaveCSS('background-color', 'rgb(229, 115, 74)')
   const login = panels(page).filter({ hasText: 'acme-api-login' })
   await expect(login.getByTestId('panel-branch')).toContainText('feat/login')
-  await expect(login.getByTestId('panel-project')).toHaveText('API')
-  await expect(login).toHaveCSS('border-top-color', 'rgb(79, 140, 255)')
+  await expect(login).toHaveAttribute('data-project', 'API')
+  await expect(login.getByTestId('panel-product')).toHaveText('Acme')
+  await expect(login.locator('.term-panel__swatch')).toHaveCSS('background-color', 'rgb(79, 140, 255)')
+  // Each panel is bound to its own live session.
+  const sessionIds = await panels(page).evaluateAll((nodes) => nodes.map((n) => n.getAttribute('data-session-id')))
+  expect(new Set(sessionIds).size).toBe(3)
+  expect(sessionIds.every((id) => id && id.length > 0)).toBe(true)
 
   // 4. The board is saved (debounced) to <dataDir>/boards/default.json.
   await expect.poll(() => savedOutline(dataDir)).toBe('H[L,V[L,L]]')
@@ -135,7 +144,7 @@ test('dragging worktrees onto pane edges splits the board, and the layout surviv
   const shapeBefore = gridShape(before)
   expect(Object.keys(before.layout.panels)).toHaveLength(3)
   const idsBefore = Object.keys(before.layout.panels).sort()
-  const textsBefore = (await panels(page).allInnerTexts()).sort()
+  const headersBefore = (await panels(page).locator('.term-panel__head').allInnerTexts()).sort()
 
   if (SCREENSHOT) {
     await mkdir(path.dirname(SCREENSHOT), { recursive: true })
@@ -151,7 +160,12 @@ test('dragging worktrees onto pane edges splits the board, and the layout surviv
   if (!after) throw new Error('board missing after restart')
   expect(Object.keys(after.layout.panels).sort()).toEqual(idsBefore)
   expect(gridShape(after)).toEqual(shapeBefore)
-  expect((await panels(second.page).allInnerTexts()).sort()).toEqual(textsBefore)
+  expect((await panels(second.page).locator('.term-panel__head').allInnerTexts()).sort()).toEqual(headersBefore)
+  // The panels re-attached to the same live sessions.
+  const sessionIdsAfter = await panels(second.page).evaluateAll((nodes) =>
+    nodes.map((n) => n.getAttribute('data-session-id')),
+  )
+  expect(sessionIdsAfter.sort()).toEqual(sessionIds.sort())
   const restored = await Promise.all([0, 1, 2].map((i) => groups(second.page).nth(i).boundingBox()))
   restored.forEach((box, i) => {
     const was = boxes[i]

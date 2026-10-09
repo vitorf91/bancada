@@ -23,6 +23,10 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Electron downloads its binary the first time it is required. Tests that start it (pty-host, replay) run in
+      # parallel workers: fetch it once here, or they race on the download and a host dies on start.
+      - name: Fetch the Electron binary
+        run: pnpm --filter @bancada/pty-host exec node -e "require('electron')"
       - name: Typecheck
         run: pnpm typecheck
       - name: Lint
