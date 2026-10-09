@@ -1,0 +1,7 @@
+{"version":2,"width":80,"height":24,"timestamp":1700000000,"duration":4}
+[0.5,"o","hello "]
+[1.0,"o","\u001b[31mred\u001b[0m"]
+[1.5,"i","x"]
+[2.0,"o","\u001b]0;title\u0007"]
+[2.5,"o","\u001b[1;5"]
+[3.0,"o","Hbox ─ 你"]

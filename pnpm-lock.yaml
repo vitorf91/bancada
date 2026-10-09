@@ -199,10 +199,22 @@ importers:
       '@bancada/protocol':
         specifier: workspace:*
         version: link:../../packages/protocol
+      '@xterm/headless':
+        specifier: 6.0.0
+        version: 6.0.0
+      node-pty:
+        specifier: 1.1.0
+        version: 1.1.0
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 24.19.2
+      electron:
+        specifier: 44.7.0
+        version: 44.7.0
+      esbuild:
+        specifier: 0.28.2
+        version: 0.28.2
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
