@@ -2,17 +2,24 @@
   "name": "@bancada/pty-host",
   "version": "0.0.0",
   "private": true,
-  "description": "Process that owns PTYs and per-session scrollback (skeleton).",
+  "description": "Process that owns PTYs and per-session scrollback, plus its client and runtime launcher.",
   "type": "module",
   "exports": "./src/index.ts",
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "build": "node scripts/build.mjs",
+    "proof:survive": "node scripts/run-ts.mjs scripts/proof-survive.ts --write ../../docs/proofs/F0-b-headless.md"
   },
   "dependencies": {
-    "@bancada/protocol": "workspace:*"
+    "@bancada/protocol": "workspace:*",
+    "node-pty": "1.1.0"
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@xterm/addon-serialize": "0.14.0",
+    "@xterm/headless": "6.0.0",
+    "electron": "44.7.0",
+    "esbuild": "0.25.12",
     "typescript": "catalog:"
   }
 }

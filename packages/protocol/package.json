@@ -4,7 +4,10 @@
   "private": true,
   "description": "pty-host wire protocol v1: types and constants shared by every client.",
   "type": "module",
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./paths": "./src/paths.ts"
+  },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json"
   },

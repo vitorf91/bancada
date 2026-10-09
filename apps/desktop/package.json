@@ -18,6 +18,7 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@bancada/protocol": "workspace:*",
     "@bancada/workspace": "workspace:*",
     "@playwright/test": "1.64.0",
     "@types/node": "catalog:",
