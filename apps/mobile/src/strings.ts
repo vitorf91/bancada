@@ -24,9 +24,15 @@ export const t = {
   pairNetwork: 'Sem conexão com o servidor. Confira o Tailscale.',
   pairInstallHint:
     'Para receber notificações, o Bancada precisa estar instalado: toque em Compartilhar, depois em "Adicionar à Tela de Início", abra o app pelo ícone e pareie por lá.',
-  offline: 'Sem conexão com o servidor',
-  offlineHint: 'Confira se o Tailscale está ligado e se o Bancada está aberto no Mac.',
-  retry: 'Tentar de novo',
+  unreachable: 'Ligue o Tailscale',
+  unreachableHint:
+    'O celular não alcança o Mac. Ligue o Tailscale e esta tela conecta sozinha. Se ele já está ligado, o Mac pode estar dormindo ou sem internet.',
+  serverDown: 'O Bancada está parado no Mac',
+  serverDownHint:
+    'O Mac respondeu, mas o servidor do Bancada não está rodando. Inicie no Mac e esta tela conecta sozinha.',
+  retrying: 'Tentando de novo a cada poucos segundos',
+  listUnreachable: 'Sem conexão com o Mac. Confira se o Tailscale está ligado.',
+  retry: 'Tentar agora',
   hostDown: 'O Bancada no Mac não está respondendo.',
   notificationsTitle: 'Notificações',
   notificationsEnable: 'Ativar notificações',
@@ -36,7 +42,10 @@ export const t = {
   notificationsInstallFirst:
     'No iPhone as notificações só funcionam depois de "Adicionar à Tela de Início" (Compartilhar, depois Adicionar à Tela de Início). Abra o Bancada pelo ícone e volte aqui.',
   notificationsExplain: 'Você recebe um aviso quando um terminal toca o sino (BEL), mesmo com o celular bloqueado.',
-  notificationsDenied: 'As notificações estão bloqueadas. Libere em Ajustes, Notificações, Bancada.',
+  notificationsDenied: (installed: boolean): string =>
+    installed
+      ? 'As notificações estão bloqueadas. Libere em Configurações, Apps, Bancada, Notificações.'
+      : 'As notificações estão bloqueadas. Toque no ícone à esquerda do endereço, depois em Permissões, e libere as notificações.',
   notificationsUnsupported: 'Este navegador não suporta notificações push.',
   notificationsFailed: 'Não deu para ativar as notificações. Tente de novo.',
   signOut: 'Sair deste aparelho',

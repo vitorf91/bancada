@@ -68,7 +68,7 @@ export function SessionList({ pushSubscribed, onPushChange, onUnauthorized, onSi
         {problem && (
           <p className="notice" role="status">
             <WifiOff size={18} aria-hidden="true" />
-            <span>{problem === 'host' ? t.hostDown : `${t.offline}. ${t.offlineHint}`}</span>
+            <span>{problem === 'host' ? t.hostDown : t.listUnreachable}</span>
           </p>
         )}
         {sessions && ordered.length === 0 && !problem && <p className="muted">{t.noSessions}</p>}

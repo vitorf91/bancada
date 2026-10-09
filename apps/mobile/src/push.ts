@@ -37,7 +37,7 @@ export function urlBase64ToUint8Array(value: string): Uint8Array<ArrayBuffer> {
 }
 
 /**
- * Must run from a click handler: iOS only shows the permission prompt for a user gesture, so
+ * Must run from a click handler: browsers only show the permission prompt for a user gesture, so
  * `requestPermission` is the first await.
  */
 export async function enablePush(): Promise<'granted' | 'denied' | 'default'> {

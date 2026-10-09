@@ -31,6 +31,9 @@ export class NetworkError extends Error {
   override name = 'NetworkError'
 }
 
+// A tailnet peer that is asleep does not refuse the connection, it leaves it hanging; give up well before the browser.
+const REQUEST_TIMEOUT_MS = 10_000
+
 async function call<T>(method: string, path: string, body?: unknown): Promise<T> {
   let res: Response
   try {
@@ -40,6 +43,7 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<T>
       cache: 'no-store',
       headers: body === undefined ? undefined : { 'content-type': 'application/json' },
       body: body === undefined ? undefined : JSON.stringify(body),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     })
   } catch {
     throw new NetworkError('network')

@@ -10,6 +10,8 @@ const port = Number(process.env.BANCADA_E2E_PORT)
 
 let stack: E2eStack
 const consoleProblems: string[] = []
+// Set while a test takes the network away on purpose: the failed loads it causes are the behavior under test.
+let networkDown = false
 
 test.beforeAll(async () => {
   stack = await startStack(port)
@@ -38,8 +40,10 @@ test.afterAll(async () => {
 
 test.beforeEach(({ page }) => {
   page.on('console', (m) => {
-    // WebKit logs every non-2xx fetch. The 401s are the flows under test (unpaired probe, wrong code, revoked device).
-    if (m.type() === 'error' && !/status of 401/.test(m.text())) consoleProblems.push(`console.error: ${m.text()}`)
+    // Chromium logs every non-2xx fetch. The 401s are the flows under test (unpaired probe, wrong code, revoked device).
+    if (m.type() !== 'error' || /status of 401/.test(m.text())) return
+    if (networkDown && /net::ERR_|status of 502|WebSocket connection to/.test(m.text())) return
+    consoleProblems.push(`console.error: ${m.text()}`)
   })
   page.on('pageerror', (e) => consoleProblems.push(`pageerror: ${e.message}`))
 })
@@ -102,9 +106,9 @@ test.describe
       await expect(rows.filter({ hasText: 'acme-web' })).toContainText('última atividade')
       await expect(rows.filter({ hasText: 'api-gateway' })).toBeVisible()
       await expect(page.getByText('2 sessões · 2 ativas')).toBeVisible()
-      // iPhone in Safari (not installed): push only works after "Adicionar à Tela de Início"
-      await expect(page.getByText('Adicionar à Tela de Início').first()).toBeVisible()
-      await expect(page.getByRole('button', { name: 'Ativar notificações' })).toHaveCount(0)
+      // Chrome on Android offers push in the tab itself, installed or not
+      await expect(page.getByRole('button', { name: 'Ativar notificações' })).toBeVisible()
+      await expect(page.getByText('Adicionar à Tela de Início')).toHaveCount(0)
       await page.screenshot({ path: path.join(shots, 'F0-d-list.png') })
       await expectPhoneLayout(page)
 
@@ -121,7 +125,7 @@ test.describe
       await expect(page.getByRole('status')).toContainText('ao vivo')
       await expect(page.getByRole('status')).toContainText('100×30')
 
-      // 100 columns do not fit a 390 px screen at 12 px: the terminal is scaled down, not resized
+      // 100 columns do not fit a 384 px screen at 12 px: the terminal is scaled down, not resized
       const geometry = await page.evaluate(() => {
         const frame = document.querySelector<HTMLElement>('.term-viewport')
         const box = document.querySelector<HTMLElement>('.term-box')
@@ -173,6 +177,45 @@ test.describe
       // back to the list
       await page.getByRole('button', { name: 'Voltar para as sessões' }).click()
       await expect(page.getByRole('heading', { name: 'Sessões' })).toBeVisible()
+    })
+
+    test('with Tailscale off a push URL still opens the app, which asks for Tailscale and connects once it is back', async ({
+      page,
+    }) => {
+      await pair(page)
+      // the worker caches the shell while it installs, so `ready` means the offline copy is there
+      const cached = await page.evaluate(async () => {
+        await navigator.serviceWorker.ready
+        const name = (await caches.keys()).find((key) => key.startsWith('bancada-shell-'))
+        return name ? (await (await caches.open(name)).keys()).map((r) => new URL(r.url).pathname) : []
+      })
+      expect(cached).toContain('/')
+      expect(cached.some((p) => p.startsWith('/assets/index-'))).toBe(true)
+
+      const id = (await stack.client.list()).find((s) => s.cwd.endsWith('acme-web'))?.id ?? ''
+      networkDown = true
+      stack.setNetwork('unreachable')
+      // a fresh navigation, as from a tapped notification (a hash change alone would not touch the network)
+      await page.goto('about:blank')
+      await page.goto(`/#/s/${encodeURIComponent(id)}`)
+      await expect(page.getByRole('heading', { name: 'Ligue o Tailscale' })).toBeVisible()
+      await page.screenshot({ path: path.join(shots, 'F0-d-offline.png') })
+      await expectPhoneLayout(page)
+
+      stack.setNetwork('up')
+      await expect(page.getByRole('status')).toContainText('ao vivo', { timeout: 10_000 })
+      await expect(page.getByTestId('terminal').locator('.xterm-rows')).toContainText('42 tests passed')
+
+      // Tailscale on, Bancada stopped on the Mac: `tailscale serve` answers 502
+      stack.setNetwork('server-down')
+      await page.reload()
+      await expect(page.getByRole('heading', { name: 'O Bancada está parado no Mac' })).toBeVisible()
+      await page.screenshot({ path: test.info().outputPath('server-down.png') })
+      await expectPhoneLayout(page)
+
+      stack.setNetwork('up')
+      await expect(page.getByRole('status')).toContainText('ao vivo', { timeout: 10_000 })
+      networkDown = false
     })
 
     test('opening a session by its push URL, then revoking the device sends the phone back to pairing', async ({
