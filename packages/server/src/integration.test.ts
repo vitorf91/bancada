@@ -17,7 +17,7 @@ let workDir: string
 beforeAll(async () => {
   host = await startRealHost()
   push = await startFakePushEndpoint()
-  workDir = fs.mkdtempSync(path.join('/tmp', 'bancada-t-work-'))
+  workDir = fs.mkdtempSync(path.join('/tmp', 'bancada-s-work-'))
   server = await startServer({
     dataDir: host.dataDir,
     port: 0,

@@ -42,9 +42,9 @@ export interface RealHost {
   stop(): Promise<void>
 }
 
-/** A real pty-host launched through Electron's node mode on a fresh `/tmp/bancada-t-*` data dir, through `ensureHost`. */
+/** A real pty-host launched through Electron's node mode on a fresh `/tmp/bancada-s-*` data dir, through `ensureHost`. Not `bancada-t-*`: the pty-host suite kills hosts of that prefix when it finishes. */
 export async function startRealHost(): Promise<RealHost> {
-  const dataDir = fs.mkdtempSync(path.join('/tmp', 'bancada-t-srv-'))
+  const dataDir = fs.mkdtempSync(path.join('/tmp', 'bancada-s-'))
   const bundlePath = path.join(dataDir, 'bundle', 'pty-host.cjs')
   buildHostBundle(bundlePath)
   const connector = ensureHostConnector({
