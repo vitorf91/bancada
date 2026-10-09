@@ -12,11 +12,14 @@
     "e2e": "electron-vite build --ignoreConfigWarning && playwright test"
   },
   "dependencies": {
+    "dockview-react": "8.4.1",
+    "lucide-react": "1.54.0",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
   "devDependencies": {
     "@bancada/protocol": "workspace:*",
+    "@bancada/workspace": "workspace:*",
     "@playwright/test": "1.64.0",
     "@types/node": "catalog:",
     "@types/react": "catalog:",

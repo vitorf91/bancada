@@ -1,28 +1,20 @@
-import { mkdtemp, rm } from 'node:fs/promises'
-import { createRequire } from 'node:module'
+import { rm } from 'node:fs/promises'
 import path from 'node:path'
-import { _electron as electron, expect, test } from '@playwright/test'
-
-const appDir = path.resolve(import.meta.dirname, '..')
-// Resolved from this package so pnpm's strict layout finds the Electron binary.
-const electronPath = createRequire(import.meta.url)('electron') as string
+import { expect, test } from '@playwright/test'
+import { launchApp, makeTempDir } from './helpers.js'
 
 test('launches the built app with its own data dir and a window titled Bancada', async () => {
   // Always a throwaway dir under /tmp: never a real profile, never a path inside the repo.
-  const dataDir = await mkdtemp('/tmp/bancada-e2e-')
-  // The parent shell may carry ELECTRON_RUN_AS_NODE, which would start Electron as plain Node.
-  const { ELECTRON_RUN_AS_NODE: _ignored, ...inherited } = process.env
-  const app = await electron.launch({
-    executablePath: electronPath,
-    args: [appDir],
-    env: { ...inherited, BANCADA_DATA_DIR: dataDir } as Record<string, string>,
-  })
+  const dataDir = makeTempDir('bancada-e2e-')
+  // No config on purpose: the app must start empty and never read the real ~/.config/bancada/config.toml.
+  const app = await launchApp(dataDir, path.join(dataDir, 'no-config.toml'))
   try {
     const window = await app.firstWindow()
     await window.waitForLoadState('domcontentloaded')
 
     expect(await window.title()).toBe('Bancada')
     await expect(window.getByRole('heading', { name: 'Bancada' })).toBeVisible()
+    await expect(window.getByText('No config found')).toBeVisible()
 
     const userData = await app.evaluate(({ app }) => app.getPath('userData'))
     expect(userData).toBe(dataDir)

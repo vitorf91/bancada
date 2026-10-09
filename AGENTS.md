@@ -4,7 +4,7 @@ Bancada is a macOS Electron IDE for running many terminal coding agents side by 
 
 ## Layout
 
-pnpm workspace (`pnpm-workspace.yaml`): `apps/desktop` (Electron + React), `apps/mobile` (PWA), `packages/protocol`, `packages/pty-host`, `packages/server`, `packages/ui`, `tools/replay`.
+pnpm workspace (`pnpm-workspace.yaml`): `apps/desktop` (Electron + React), `apps/mobile` (PWA), `packages/protocol`, `packages/pty-host`, `packages/server`, `packages/ui`, `packages/workspace` (config and git worktree discovery, Node only), `tools/replay`.
 
 - Internal packages export their TypeScript source (`"exports": "./src/index.ts"`). Nothing is emitted with `tsc`; every runtime artifact is bundled (electron-vite for desktop, esbuild for pty-host and server).
 - Workspace packages go in `devDependencies` of the app that bundles them. electron-vite externalizes everything under `dependencies`, and Electron cannot load a `.ts` file at runtime.
