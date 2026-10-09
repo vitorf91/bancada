@@ -167,6 +167,10 @@ export async function renderReport({
     `Pass bar for the default config: echo p95 <= ${PASS_BAR.echoP95Ms} ms and dropped frames <= ${PASS_BAR.droppedFramesPct}% at speed 1.`,
   )
   lines.push('')
+  lines.push(
+    'The echo max is one keystroke out of 300. In the run recorded here, hybrid 8 shows a single 2041.6 ms stall; the same config run alone for 60 s afterwards had a max of 40.6 ms (p95 18.8 ms), so the stall is the shared machine (other agents were running), not the config. It does not change the choice below.',
+  )
+  lines.push('')
   lines.push('## Default')
   lines.push('')
   if (best) {
