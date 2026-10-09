@@ -73,6 +73,20 @@ Binary frames carry terminal I/O so output never pays for base64 or JSON.
 - xterm.js **6.0.0 stable**, paired addons: `@xterm/addon-webgl` 0.19.0, `@xterm/addon-serialize` 0.14.0, `@xterm/headless` 6.0.0 (host side). No beta channels: addon majors must match the core.
 - Visible panes attach, hidden panes detach. The WebGL budget (Chromium keeps about 16 live contexts per page) is decided by the F0 terminal-grid proof.
 
+## Workspace config and discovery
+
+`packages/workspace` (`@bancada/workspace`, Node only) owns the config file and the scan of the machine.
+
+- Config: `~/.config/bancada/config.toml`, or the file named by `BANCADA_CONFIG` (tests). A generic example is `docs/config.example.toml`. Model: `[[products]]` (`id`, `name`, `color`, `projects = [{ path, name? }]`) and `[options]` (`worktreeRoot`, `collapsedWorktrees` globs, default `**/.claude/worktrees/**`). Paths are absolute or start with `~/`. A missing file is an empty workspace, an invalid one is reported to the UI; neither crashes the app.
+- Discovery, per project path: a git repo (has `.git`) lists its worktrees from `git worktree list --porcelain` (path, branch, head, detached, locked, prunable); a non-git folder holding repos up to 2 levels deep (hidden folders and `node_modules` skipped, never searching inside a repo) is a **group** of repos; any other folder is a plain **folder**. Each worktree is `main` (first record), `ephemeral-agent` (path under `.claude/worktrees/`) or `regular`, and `collapsed` when it matches a collapsed glob. A failure is reported on the project (`kind: 'error'`) or on the repo (`error`), never thrown for the whole tree.
+- `pnpm --filter @bancada/workspace import-orca [--write]` prints a suggested config from `orca repo list`; `--write` creates the file only if it does not exist. `pnpm --filter @bancada/workspace discover [--orca | <path>...]` prints read-only counts per project.
+
+## Desktop process boundary and boards
+
+- The renderer is sandboxed (`sandbox: true`, `contextIsolation: true`, `nodeIntegration: false`). The only bridge is `src/preload/index.ts` (built as CommonJS, which a sandboxed preload requires), exposing `window.bancada` with `discoverWorkspace()`, `loadBoard(id)` and `saveBoard(id, board)`. Types live in `apps/desktop/src/shared/api.ts`; main only answers IPC from its own window.
+- A board is dockview's `toJSON()` layout wrapped as `{ version: 1, layout }` and stored at `<dataDir>/boards/<id>.json` (atomic write, board ids restricted to `[A-Za-z0-9_-]`). The renderer saves 300 ms after a layout change and restores on start; the first board is `default`.
+- Layout uses `dockview-react` 8.4.1 (MIT packages only; never `dockview-enterprise`). Sidebar items are HTML5 drags with the custom type `application/x-bancada-worktree`; the board accepts them through dockview's `onUnhandledDragOver` and places the new panel from `onDidDrop` (edge = split, center = tab).
+
 ## Phone
 
 The server binds to `127.0.0.1` only. The phone reaches it through `tailscale serve` (HTTPS on the tailnet, nothing on the public internet), plus a per-device token. Push uses Web Push (VAPID), with the private key in the macOS Keychain.

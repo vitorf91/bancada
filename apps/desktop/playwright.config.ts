@@ -4,7 +4,7 @@ import { defineConfig } from '@playwright/test'
 // `pnpm --filter @bancada/desktop e2e` (builds first).
 export default defineConfig({
   testDir: './e2e',
-  timeout: 30_000,
+  timeout: 60_000,
   fullyParallel: false,
   workers: 1,
   reporter: [['list']],

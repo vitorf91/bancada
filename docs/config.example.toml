@@ -1,0 +1,43 @@
+# Bancada workspace config. Copy to ~/.config/bancada/config.toml (or point BANCADA_CONFIG at another file)
+# and replace the made-up names below with your own.
+#
+# A product groups projects you think of together; the sidebar shows product > project > worktree.
+# Each project path is one of:
+#   - a git repository: its worktrees are listed (main checkout, linked worktrees, agent worktrees);
+#   - a folder that is not a repository but contains repositories up to 2 levels deep: shown as a group;
+#   - any other folder: shown as a plain folder.
+# Paths are absolute, or start with "~/".
+
+[options]
+# Where new worktrees will be created (used by the "new worktree" flow, not by discovery).
+worktreeRoot = "~/code/.worktrees"
+
+# Worktrees whose absolute path matches one of these globs start collapsed in the sidebar.
+# This is the default; list your own to replace it.
+collapsedWorktrees = ["**/.claude/worktrees/**"]
+
+[[products]]
+id = "acme"
+name = "Acme"
+color = "#4f8cff"
+
+[[products.projects]]
+path = "~/code/acme-api"
+name = "API"
+
+[[products.projects]]
+path = "~/code/acme-web"
+
+[[products]]
+id = "labs"
+name = "Labs"
+color = "#e5734a"
+
+# A folder of repositories that is not a repository itself becomes a group.
+[[products.projects]]
+path = "~/code/labs"
+
+# A plain folder (notes, docs, scratch space).
+[[products.projects]]
+path = "~/code/notes"
+name = "Notes"
