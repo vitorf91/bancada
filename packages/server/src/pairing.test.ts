@@ -1,5 +1,4 @@
 import fs from 'node:fs'
-import os from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DeviceStore, hashToken } from './devices.js'
@@ -10,7 +9,7 @@ let clock: number
 const now = (): number => clock
 
 beforeEach(() => {
-  dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bancada-u-'))
+  dir = fs.mkdtempSync(path.join('/tmp', 'bancada-u-'))
   clock = 1_000_000
 })
 afterEach(() => fs.rmSync(dir, { recursive: true, force: true }))

@@ -1,5 +1,4 @@
 import fs from 'node:fs'
-import os from 'node:os'
 import path from 'node:path'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import {
@@ -46,7 +45,7 @@ describe('push payload', () => {
 describe('VAPID keys', () => {
   let dir: string
   beforeEach(() => {
-    dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bancada-u-'))
+    dir = fs.mkdtempSync(path.join('/tmp', 'bancada-u-'))
   })
   afterEach(() => fs.rmSync(dir, { recursive: true, force: true }))
 
@@ -84,7 +83,7 @@ describe('push send path against a fake push endpoint', () => {
   })
   afterAll(() => endpoint.close())
   beforeEach(() => {
-    dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bancada-u-'))
+    dir = fs.mkdtempSync(path.join('/tmp', 'bancada-u-'))
     endpoint.received.length = 0
     endpoint.respondWith = 201
   })
