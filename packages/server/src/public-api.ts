@@ -7,10 +7,12 @@ import type { DeviceInfo, DeviceStore } from './devices.js'
 import { type HostLink, HostUnavailableError } from './host-link.js'
 import {
   clearedCookie,
+  decodeSegment,
   deviceCookie,
   HttpError,
   isSameOrigin,
   readJsonBody,
+  requestPath,
   sendJson,
   tokenFromRequest,
 } from './http-util.js'
@@ -84,7 +86,15 @@ export class PublicApi {
     this.server = http.createServer((req, res) => {
       this.handle(req, res).catch((error: unknown) => this.fail(res, error))
     })
-    this.server.on('upgrade', (req, socket, head) => this.upgrade(req, socket, head))
+    this.server.on('upgrade', (req, socket, head) => {
+      // An exception here would be uncaught and end the process, so whatever the peer sent, answer and move on.
+      try {
+        this.upgrade(req, socket, head)
+      } catch (error) {
+        this.options.log(`upgrade failed (${error instanceof Error ? error.message : String(error)})`)
+        socket.end('HTTP/1.1 500 Internal Server Error\r\nConnection: close\r\nContent-Length: 0\r\n\r\n')
+      }
+    })
     options.devices.onRevoked((device) => this.dropDevice(device))
     this.pingTimer = setInterval(() => this.ping(), PING_INTERVAL_MS)
     this.pingTimer.unref()
@@ -121,17 +131,18 @@ export class PublicApi {
   }
 
   private async handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
-    const url = new URL(req.url ?? '/', 'http://x')
+    const pathname = requestPath(req)
+    if (pathname === null) throw new HttpError(400, 'bad_request')
     const method = req.method ?? 'GET'
 
-    if (!url.pathname.startsWith('/api/')) {
+    if (!pathname.startsWith('/api/')) {
       if (this.options.pwaDir && serveStatic(this.options.pwaDir, req, res)) return
       res.writeHead(404, { ...securityHeaders(), 'content-type': 'text/plain; charset=utf-8' })
       res.end('Not found')
       return
     }
 
-    if (url.pathname === '/api/pair') {
+    if (pathname === '/api/pair') {
       if (method !== 'POST') throw new HttpError(405, 'method_not_allowed')
       if (!isSameOrigin(req)) throw new HttpError(403, 'bad_origin')
       const body = (await readJsonBody(req)) as { code?: unknown; name?: unknown }
@@ -157,25 +168,25 @@ export class PublicApi {
     }
     if (method !== 'GET' && method !== 'HEAD' && !isSameOrigin(req)) throw new HttpError(403, 'bad_origin')
 
-    if (url.pathname === '/api/me' && method === 'GET') {
+    if (pathname === '/api/me' && method === 'GET') {
       sendJson(res, 200, { device, push: { subscribed: this.options.subscriptions.hasDevice(device.id) } })
       return
     }
-    if (url.pathname === '/api/logout' && method === 'POST') {
+    if (pathname === '/api/logout' && method === 'POST') {
       this.options.devices.revoke(device.id)
       sendJson(res, 200, { ok: true }, { 'set-cookie': clearedCookie() })
       return
     }
-    if (url.pathname === '/api/sessions' && method === 'GET') {
+    if (pathname === '/api/sessions' && method === 'GET') {
       const sessions = await this.options.link.list()
       sendJson(res, 200, { sessions: sessions.map(summarize) })
       return
     }
-    if (url.pathname === '/api/push/key' && method === 'GET') {
+    if (pathname === '/api/push/key' && method === 'GET') {
       sendJson(res, 200, { publicKey: this.options.push.publicKey })
       return
     }
-    if (url.pathname === '/api/push/subscribe' && method === 'POST') {
+    if (pathname === '/api/push/subscribe' && method === 'POST') {
       const body = (await readJsonBody(req)) as { subscription?: unknown }
       const subscription = parseSubscription(body.subscription)
       if (!subscription) throw new HttpError(400, 'invalid_subscription')
@@ -183,7 +194,7 @@ export class PublicApi {
       sendJson(res, 200, { ok: true })
       return
     }
-    if (url.pathname === '/api/push/unsubscribe' && method === 'POST') {
+    if (pathname === '/api/push/unsubscribe' && method === 'POST') {
       this.options.subscriptions.removeDevice(device.id)
       sendJson(res, 200, { ok: true })
       return
@@ -197,7 +208,12 @@ export class PublicApi {
     const reject = (status: number, text: string): void => {
       socket.end(`HTTP/1.1 ${status} ${text}\r\nConnection: close\r\nContent-Length: 0\r\n\r\n`)
     }
-    const match = /^\/api\/sessions\/([^/]{1,64})\/stream$/.exec(new URL(req.url ?? '/', 'http://x').pathname)
+    const pathname = requestPath(req)
+    if (pathname === null) {
+      reject(400, 'Bad Request')
+      return
+    }
+    const match = /^\/api\/sessions\/([^/]{1,64})\/stream$/.exec(pathname)
     if (!match) {
       reject(404, 'Not Found')
       return
@@ -215,7 +231,11 @@ export class PublicApi {
       reject(429, 'Too Many Requests')
       return
     }
-    const sessionId = decodeURIComponent(match[1] as string)
+    const sessionId = decodeSegment(match[1] as string)
+    if (sessionId === null) {
+      reject(400, 'Bad Request')
+      return
+    }
     this.wss.handleUpgrade(req, socket, head, (ws) => {
       void this.stream(ws, device, sessionId)
     })

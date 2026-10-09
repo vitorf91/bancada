@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import path from 'node:path'
+import { decodeSegment, requestPath } from './http-util.js'
 
 const TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -45,13 +46,9 @@ export function securityHeaders(): Record<string, string> {
 /** Serves a file of `root` for GET/HEAD. Returns false when there is no such file (the caller answers 404). */
 export function serveStatic(root: string, req: IncomingMessage, res: ServerResponse): boolean {
   if (req.method !== 'GET' && req.method !== 'HEAD') return false
-  let pathname: string
-  try {
-    pathname = decodeURIComponent(new URL(req.url ?? '/', 'http://x').pathname)
-  } catch {
-    return false
-  }
-  if (pathname.includes('\0')) return false
+  const raw = requestPath(req)
+  const pathname = raw === null ? null : decodeSegment(raw)
+  if (pathname === null || pathname.includes('\0')) return false
   const relative = pathname.endsWith('/') ? `${pathname}index.html` : pathname
   const file = path.join(root, path.normalize(relative))
   if (file !== root && !file.startsWith(root + path.sep)) return false

@@ -53,6 +53,30 @@ export function isSameOrigin(req: IncomingMessage): boolean {
   return host === firstHeader(req.headers['x-forwarded-host']) || host === firstHeader(req.headers.host)
 }
 
+/**
+ * The path of a request target in origin-form (`/a/b?q`), or null when it is anything else. Peers send arbitrary bytes
+ * here before any authentication, and `new URL` throws on some of them (`//`, for one), so nothing may call it
+ * on `req.url` directly. A target that starts with `//` is refused as well: URL parsing would read it as a host.
+ */
+export function requestPath(req: IncomingMessage): string | null {
+  const target = req.url ?? '/'
+  if (!target.startsWith('/') || target.startsWith('//')) return null
+  try {
+    return new URL(target, 'http://x').pathname
+  } catch {
+    return null
+  }
+}
+
+/** `decodeURIComponent` that answers null for malformed percent-escapes instead of throwing. */
+export function decodeSegment(segment: string): string | null {
+  try {
+    return decodeURIComponent(segment)
+  } catch {
+    return null
+  }
+}
+
 export class HttpError extends Error {
   constructor(
     readonly status: number,

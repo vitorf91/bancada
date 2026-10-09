@@ -1,4 +1,5 @@
 import http from 'node:http'
+import net from 'node:net'
 import { WebSocket } from 'ws'
 
 export interface Response {
@@ -118,4 +119,33 @@ export function openStream(
     )
     ws.once('error', reject)
   })
+}
+
+/** Sends raw bytes and returns the status line of the answer (or '' when the server closed without one). */
+export function rawStatusLine(port: number, raw: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const socket = net.connect(port, '127.0.0.1', () => socket.write(raw))
+    let text = ''
+    socket.on('data', (c) => {
+      text += c.toString('latin1')
+    })
+    socket.on('error', reject)
+    socket.on('close', () => resolve(text.split('\r\n')[0] ?? ''))
+  })
+}
+
+/** A WebSocket upgrade request with a hand-written request target, which `ws` and `fetch` would normalize. */
+export function rawUpgrade(port: number, target: string, cookie?: string): string {
+  return [
+    `GET ${target} HTTP/1.1`,
+    `Host: 127.0.0.1:${port}`,
+    `Origin: http://127.0.0.1:${port}`,
+    'Upgrade: websocket',
+    'Connection: Upgrade',
+    'Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==',
+    'Sec-WebSocket-Version: 13',
+    ...(cookie ? [`Cookie: ${cookie}`] : []),
+    '',
+    '',
+  ].join('\r\n')
 }

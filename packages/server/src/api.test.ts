@@ -6,7 +6,7 @@ import { COOKIE_NAME } from './http-util.js'
 import { FileSecretStore } from './secrets.js'
 import { type RunningServer, startServer } from './server.js'
 import { FakeHost } from './test-support/fake-host.js'
-import { openStream, pairDevice, request } from './test-support/http.js'
+import { openStream, pairDevice, rawStatusLine, rawUpgrade, request } from './test-support/http.js'
 
 let dir: string
 let pwaDir: string
@@ -243,6 +243,33 @@ describe('sessions API', () => {
       expect(res.status, `${method} ${url}`).toBe(404)
     }
     expect(host.forbidden).toEqual([])
+  })
+})
+
+describe('malformed request targets', () => {
+  it('answers 400 to a WebSocket upgrade it cannot parse, before and after authentication, and keeps serving', async () => {
+    const { cookie } = await paired()
+    for (const [target, withCookie] of [
+      ['//', false],
+      ['//', true],
+      ['/api/sessions/%E0%A4%A/stream', false],
+      ['/api/sessions/%E0%A4%A/stream', true],
+    ] as const) {
+      const line = await rawStatusLine(server.port, rawUpgrade(server.port, target, withCookie ? cookie : undefined))
+      // Without a cookie the percent-escape is never decoded, so the answer is 401; with one it must be 400.
+      const expected = target === '//' || withCookie ? 'HTTP/1.1 400 Bad Request' : 'HTTP/1.1 401 Unauthorized'
+      expect(line, `${target} cookie=${withCookie}`).toBe(expected)
+    }
+    expect((await request(server.port, 'GET', '/')).status).toBe(200)
+  })
+
+  it('answers 400 to an HTTP request target it cannot parse, and keeps serving', async () => {
+    for (const target of ['//', '//api/me', '*']) {
+      const line = await rawStatusLine(server.port, `GET ${target} HTTP/1.1\r\nHost: x\r\nConnection: close\r\n\r\n`)
+      expect(line, target).toBe('HTTP/1.1 400 Bad Request')
+    }
+    expect((await request(server.port, 'GET', '/%E0%A4%A')).status).toBe(404)
+    expect((await request(server.port, 'GET', '/')).status).toBe(200)
   })
 })
 
