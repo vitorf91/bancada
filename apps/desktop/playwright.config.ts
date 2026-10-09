@@ -4,6 +4,8 @@ import { defineConfig } from '@playwright/test'
 // `pnpm --filter @bancada/desktop e2e` (builds first).
 export default defineConfig({
   testDir: './e2e',
+  // Proof (b) rebuilds the app and takes minutes: `pnpm --filter @bancada/desktop proof:survive` runs it.
+  testIgnore: process.env.BANCADA_PROOF_B_OUT ? [] : ['**/survive.spec.ts'],
   timeout: 60_000,
   fullyParallel: false,
   workers: 1,

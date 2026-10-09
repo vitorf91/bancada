@@ -14,7 +14,7 @@ pnpm workspace (`pnpm-workspace.yaml`): `apps/desktop` (Electron + React), `apps
 ## Checks
 
 - `pnpm check` always (typecheck, lint, test, build, failing fast). `pnpm format` fixes formatting and import order (Biome).
-- `pnpm --filter @bancada/desktop e2e` for any change to Electron or the UI. It builds the app, opens a real window and runs the Playwright smoke test. It is not part of `pnpm check` or CI yet.
+- `pnpm --filter @bancada/desktop e2e` for any change to Electron or the UI. It builds the app, opens a real window and runs the Playwright smoke test. It is not part of `pnpm check` or CI yet. `pnpm --filter @bancada/desktop bench` (proof a, about 8 minutes, opens a 1512x982 window) and `pnpm --filter @bancada/desktop proof:survive` (proof b, rewrites `docs/proofs/F0-b.md`) are run on demand.
 - Do not skip or weaken a check to get green. A failing gate is fixed, or recorded with the command that reproduces it.
 
 ## Conventions

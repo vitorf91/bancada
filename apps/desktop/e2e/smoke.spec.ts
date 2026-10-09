@@ -1,7 +1,7 @@
 import { rm } from 'node:fs/promises'
 import path from 'node:path'
 import { expect, test } from '@playwright/test'
-import { launchApp, makeTempDir } from './helpers.js'
+import { launchApp, makeTempDir, shutdownHost } from './helpers.js'
 
 test('launches the built app with its own data dir and a window titled Bancada', async () => {
   // Always a throwaway dir under /tmp: never a real profile, never a path inside the repo.
@@ -20,6 +20,8 @@ test('launches the built app with its own data dir and a window titled Bancada',
     expect(userData).toBe(dataDir)
   } finally {
     await app.close()
+    // The app starts the pty-host, which outlives it.
+    await shutdownHost(dataDir, 5000)
     await rm(dataDir, { recursive: true, force: true })
   }
 })

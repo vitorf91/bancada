@@ -8,7 +8,7 @@ import {
 } from 'dockview-react'
 import { type Ref, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import { hasWorktreePayload, type PanelTarget, readDragPayload } from './drag-payload.js'
-import { WorktreePanel } from './WorktreePanel.js'
+import { TerminalPanel, type TerminalPanelParams } from './TerminalPanel.js'
 
 const BOARD_ID = 'default'
 const SAVE_DEBOUNCE_MS = 300
@@ -18,10 +18,11 @@ export interface BoardHandle {
   open(target: PanelTarget): void
 }
 
-const components = { worktree: WorktreePanel }
+// The component key stays `worktree`: boards saved by earlier builds name it.
+const components = { worktree: TerminalPanel }
 
 function Watermark(_props: IWatermarkPanelProps) {
-  return <div className="board__empty">Drag a worktree from the sidebar to start a board.</div>
+  return <div className="board__empty">Arraste um worktree da barra lateral para abrir um terminal.</div>
 }
 
 const DIRECTION = { top: 'above', bottom: 'below', left: 'left', right: 'right' } as const
@@ -56,14 +57,30 @@ export function Board({ ref }: { ref?: Ref<BoardHandle> }) {
     return () => window.removeEventListener('pagehide', flush)
   }, [saveNow])
 
-  const addTarget = useCallback((target: PanelTarget, position?: AddPanelPositionOptions) => {
+  /** Starts a shell in the worktree, then puts it on the board. A session that cannot start still gets a panel that says why. */
+  const addTarget = useCallback(async (target: PanelTarget, position?: AddPanelPositionOptions) => {
     const api = apiRef.current
     if (!api) return
+    const params: TerminalPanelParams = { ...target, sessionId: null }
+    try {
+      const session = await window.bancada.spawn({
+        cwd: target.path,
+        meta: {
+          product: target.productName,
+          project: target.projectName,
+          worktree: target.name,
+          ...(target.branch ? { branch: target.branch } : {}),
+        },
+      })
+      params.sessionId = session.id
+    } catch (error) {
+      params.error = error instanceof Error ? error.message.replace(/^.*?bancada:[a-z_]+:/, '') : String(error)
+    }
     api.addPanel({
       id: `wt-${crypto.randomUUID().slice(0, 8)}`,
       component: 'worktree',
       title: target.name,
-      params: target,
+      params,
       ...(position ? { position } : {}),
     })
   }, [])
@@ -73,7 +90,7 @@ export function Board({ ref }: { ref?: Ref<BoardHandle> }) {
     () => ({
       open(target) {
         const group = apiRef.current?.activeGroup
-        addTarget(target, group ? { referenceGroup: group, direction: 'right' } : undefined)
+        void addTarget(target, group ? { referenceGroup: group, direction: 'right' } : undefined)
       },
     }),
     [addTarget],
@@ -93,9 +110,9 @@ export function Board({ ref }: { ref?: Ref<BoardHandle> }) {
         if (!target) return
         const side = event.position === 'center' ? undefined : DIRECTION[event.position]
         if (event.group) {
-          addTarget(target, { referenceGroup: event.group, direction: side ?? 'within' })
+          void addTarget(target, { referenceGroup: event.group, direction: side ?? 'within' })
         } else {
-          addTarget(target, side ? { direction: side } : undefined)
+          void addTarget(target, side ? { direction: side } : undefined)
         }
       })
       api.onDidLayoutChange(scheduleSave)

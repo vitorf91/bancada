@@ -74,8 +74,22 @@ Binary frames carry terminal I/O so output never pays for base64 or JSON.
 
 ## Renderer terminals
 
-- xterm.js **6.0.0 stable**, paired addons: `@xterm/addon-webgl` 0.19.0, `@xterm/addon-serialize` 0.14.0, `@xterm/headless` 6.0.0 (host side). No beta channels: addon majors must match the core.
-- Visible panes attach, hidden panes detach. The WebGL budget (Chromium keeps about 16 live contexts per page) is decided by the F0 terminal-grid proof.
+- xterm.js **6.0.0 stable** in `packages/ui` (`TerminalView`), with exactly pinned addons: `@xterm/addon-webgl` 0.19.0, `addon-fit` 0.11.0, `addon-unicode11` 0.9.0, `addon-web-links` 0.12.0; `@xterm/addon-serialize` 0.14.0 and `@xterm/headless` 6.0.0 on the host side. No beta channels: addon majors must match the core.
+- `TerminalView` knows nothing about Electron: it takes a `connect` function that returns a `TerminalLink` (snapshot, output and event subscriptions, `write`, `resize`, `close`). The desktop implements it over a MessagePort; the phone will implement it over a WebSocket.
+- Attach order: create the terminal at the snapshot's size, write the snapshot, then fit to the container and send the resize. Fit is skipped while the container is 0x0. The view sends a resize when it connects, when its container changes size, and on focus or first typing after focus (last active client wins). Shift+Enter sends `ESC CR` (Claude Code's newline); the swallowed `keypress` would otherwise send a plain CR.
+- Visible panes attach, hidden panes detach (a tab behind another one, via dockview's visibility event) and re-attach with a fresh snapshot (`reset()` + write). An attach asks for **2000 lines** of scrollback (about 4 ms to serialize against 30 ms and more for 10,000); the full history is a later, on-demand feature.
+- **WebGL budget** (`WebglBudget` in `packages/ui`): Chromium keeps about 16 live contexts per page, and each costs GPU memory, so only the N most recently active visible terminals (focused first) use WebGL and the rest use the DOM renderer. A lost context falls back to the DOM renderer and is not retried. N and the default are set by the F0 terminal-grid proof, [docs/proofs/F0-a.md](proofs/F0-a.md).
+
+The board with four live shells (generic e2e fixture, captured by `apps/desktop/e2e/visual.spec.ts`): ![board](proofs/assets/F0-terminals-board.png)
+
+### Main to renderer data path
+
+- Main owns one connection to the pty-host and keeps **one host attachment per session**: a second attach from the same connection replaces the first and fails with a misleading `invalid_request`. It fans the output out to one `MessageChannelMain` port per renderer view (`apps/desktop/src/main/terminal-hub.ts`).
+- Per view: `attach(sessionId, viewId, { scrollback })` over IPC; main creates the channel, registers the view, attaches (or restarts) the host attachment, posts the snapshot as the first port message, then transfers the port to the page (`webContents.postMessage`). A port cannot cross `contextBridge`, so the preload forwards it with `window.postMessage` and `src/renderer/src/terminal-link.ts` matches it to the `attach` call by `viewId`.
+- Output is a bare `Uint8Array` per message (no JSON, no base64). Main copies each chunk into a tight array first: the host client hands out slices of larger socket buffers, and structured clone would serialize the whole backing buffer. (`MessagePortMain` only transfers ports, so the bytes are copied once per view.)
+- A view that joins a session already attached restarts the host attachment (`detach`, `attach`) and every view of that session gets the new snapshot first (the views already open redraw): no gap, no duplicate. The last view to leave detaches the host attachment. A view detached while its attach is still in flight is handled (the view is registered before anything asynchronous).
+- Keystrokes and resizes go as fire-and-forget IPC (`ipcRenderer.send`). `session-exited` reaches the views as a port message and every window as an event; if the host connection drops, views get `closed` and show the ended state.
+- A panel keeps its `sessionId` in the saved board. On restore it attaches by id: a session that is gone (`not_found`) shows "sessão encerrada" instead of a terminal, and an error boundary wraps every panel.
 
 ## Workspace config and discovery
 
@@ -87,9 +101,10 @@ Binary frames carry terminal I/O so output never pays for base64 or JSON.
 
 ## Desktop process boundary and boards
 
-- The renderer is sandboxed (`sandbox: true`, `contextIsolation: true`, `nodeIntegration: false`). The only bridge is `src/preload/index.ts` (built as CommonJS, which a sandboxed preload requires), exposing `window.bancada` with `discoverWorkspace()`, `loadBoard(id)` and `saveBoard(id, board)`. Types live in `apps/desktop/src/shared/api.ts`; main only answers IPC from its own window.
+- The renderer is sandboxed (`sandbox: true`, `contextIsolation: true`, `nodeIntegration: false`). The only bridge is `src/preload/index.ts` (built as CommonJS, which a sandboxed preload requires), exposing `window.bancada` with `discoverWorkspace()`, `loadBoard(id)`, `saveBoard(id, board)` and the terminal calls `spawn`, `list`, `attach`, `write`, `resize`, `detach`, `kill` and `onSessionEvent`. Types live in `apps/desktop/src/shared/api.ts`; main only answers IPC from its own window.
 - A board is dockview's `toJSON()` layout wrapped as `{ version: 1, layout }` and stored at `<dataDir>/boards/<id>.json` (atomic write, board ids restricted to `[A-Za-z0-9_-]`). The renderer saves 300 ms after a layout change and restores on start; the first board is `default`.
-- Layout uses `dockview-react` 8.4.1 (MIT packages only; never `dockview-enterprise`). Sidebar items are HTML5 drags with the custom type `application/x-bancada-worktree`; the board accepts them through dockview's `onUnhandledDragOver` and places the new panel from `onDidDrop` (edge = split, center = tab).
+- Layout uses `dockview-react` 8.4.1 (MIT packages only; never `dockview-enterprise`). Sidebar items are HTML5 drags with the custom type `application/x-bancada-worktree` (a click opens one next to the active panel); the board accepts them through dockview's `onUnhandledDragOver` and, from `onDidDrop`, spawns a shell session (cwd = the worktree path) and places the new panel (edge = split, center = tab). Closing a panel does not end its session in F0.
+- The pty-host bundle and node-pty come from the workspace in dev, e2e and bench (`apps/desktop/src/main/host.ts`: the built `packages/pty-host/dist/pty-host.cjs`, and the node-pty that package resolves, both overridable with `BANCADA_PTY_HOST_BUNDLE` and `BANCADA_NODE_PTY_DIR`); `prepareRuntime` copies them into the data dir. Packaged builds will point them at app resources.
 
 ## Phone
 
