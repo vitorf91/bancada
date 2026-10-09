@@ -13,3 +13,8 @@
   height: 100%;
   padding: var(--term-padding, 6px 8px);
 }
+
+/* xterm.css paints the scrollable viewport black: follow the terminal background instead. */
+.terminal-view .xterm-viewport {
+  background-color: var(--term-bg);
+}

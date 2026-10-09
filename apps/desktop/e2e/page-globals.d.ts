@@ -21,4 +21,22 @@ declare const window: {
   }
   __bancadaTerminals?: Record<string, E2eTerminal>
   __bancadaStatus?: Record<string, string>
+  __bench?: BenchPageHandle
+}
+
+// The bench page (src/renderer/src/bench/BenchApp.tsx).
+interface BenchPageHandle {
+  ready: Promise<void>
+  start(): void
+  waitEcho(count: number, timeoutMs: number): Promise<number>
+  noteMissed(): void
+  stop(): {
+    frames: number
+    dropped: number
+    deltas: { median: number; p95: number; max: number }
+    echoLatencies: number[]
+    echoMissed: number
+  }
+  renderers(): { webgl: number; dom: number; contextLoss: number; unsupported: number }
+  sessionIds(): string[]
 }

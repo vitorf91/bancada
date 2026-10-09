@@ -321,3 +321,50 @@ body {
   outline: 2px solid var(--color-accent);
   outline-offset: 1px;
 }
+
+/* Bench (proof a): a grid of terminals filling the window */
+.bench {
+  display: grid;
+  grid-auto-rows: minmax(0, 1fr);
+  width: 100vw;
+  height: 100vh;
+  gap: 1px;
+  background: var(--color-border);
+}
+
+.bench__cell {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--term-bg);
+}
+
+.bench__head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--pane-header-height);
+  padding: 0 var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-1);
+  background: var(--color-pane-header);
+}
+
+.bench__swatch {
+  width: 9px;
+  height: 9px;
+  background: var(--product-color-fallback);
+  border-radius: 3px;
+}
+
+.bench__body {
+  flex: 1;
+  min-height: 0;
+}
+
+.bench__error {
+  margin: var(--space-4);
+  color: var(--color-danger);
+}

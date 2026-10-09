@@ -10,7 +10,8 @@
     "build": "electron-vite build --ignoreConfigWarning",
     "typecheck": "tsc -p tsconfig.node.json --composite false && tsc -p tsconfig.web.json --composite false",
     "e2e": "pnpm --filter @bancada/pty-host build && electron-vite build --ignoreConfigWarning && playwright test",
-    "bench": "pnpm --filter @bancada/pty-host build && pnpm --filter @bancada/replay build && electron-vite build --ignoreConfigWarning && playwright test -c playwright.bench.config.ts"
+    "bench": "pnpm --filter @bancada/pty-host build && pnpm --filter @bancada/replay build && electron-vite build --ignoreConfigWarning && playwright test -c playwright.bench.config.ts",
+    "proof:survive": "pnpm --filter @bancada/pty-host build && electron-vite build --ignoreConfigWarning && BANCADA_PROOF_B_OUT=../../docs/proofs/F0-b.md playwright test e2e/survive.spec.ts"
   },
   "dependencies": {
     "@fontsource-variable/geist": "5.3.0",
