@@ -15,7 +15,7 @@ createRoot(root).render(
   </StrictMode>,
 )
 
-// The service worker exists for push; it caches nothing.
+// The service worker handles push and keeps an offline copy of the shell (see src/sw.js).
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   void navigator.serviceWorker.register('/sw.js').catch(() => undefined)
 }

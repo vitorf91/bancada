@@ -37,7 +37,19 @@ export interface E2eStack {
   proxyPort: number
   client: PtyClient
   socketPath: string
+  /**
+   * What the phone's network does. `unreachable`: every connection is dropped, as with Tailscale off. `server-down`:
+   * the proxy answers 502, as `tailscale serve` does when nothing listens behind it. Switching drops open connections.
+   */
+  setNetwork(mode: NetworkMode): void
   stop(): Promise<void>
+}
+
+export type NetworkMode = 'up' | 'unreachable' | 'server-down'
+
+interface TlsProxy {
+  server: https.Server
+  setMode(mode: NetworkMode): void
 }
 
 function wait(ms: number): Promise<void> {
@@ -58,8 +70,14 @@ export function control<T>(socketPath: string, method: string, requestPath: stri
 }
 
 /** Stands in for `tailscale serve`: HTTPS in front, plain HTTP to 127.0.0.1, with the X-Forwarded-* headers. */
-function startTlsProxy(listenPort: number, targetPort: number): Promise<https.Server> {
+function startTlsProxy(listenPort: number, targetPort: number): Promise<TlsProxy> {
+  let mode: NetworkMode = 'up'
+  const sockets = new Set<net.Socket>()
   const server = https.createServer(selfSignedCert(), (req, res) => {
+    if (mode === 'server-down') {
+      res.writeHead(502).end()
+      return
+    }
     const upstream = http.request(
       {
         host: '127.0.0.1',
@@ -76,7 +94,19 @@ function startTlsProxy(listenPort: number, targetPort: number): Promise<https.Se
     upstream.on('error', () => res.writeHead(502).end())
     req.pipe(upstream)
   })
+  server.on('connection', (socket: net.Socket) => {
+    if (mode === 'unreachable') {
+      socket.destroy()
+      return
+    }
+    sockets.add(socket)
+    socket.on('close', () => sockets.delete(socket))
+  })
   server.on('upgrade', (req, socket, head) => {
+    if (mode === 'server-down') {
+      socket.end('HTTP/1.1 502 Bad Gateway\r\ncontent-length: 0\r\n\r\n')
+      return
+    }
     const upstream = net.connect(targetPort, '127.0.0.1', () => {
       let raw = `${req.method} ${req.url} HTTP/1.1\r\n`
       for (let i = 0; i < req.rawHeaders.length; i += 2) raw += `${req.rawHeaders[i]}: ${req.rawHeaders[i + 1]}\r\n`
@@ -88,7 +118,11 @@ function startTlsProxy(listenPort: number, targetPort: number): Promise<https.Se
     upstream.on('error', () => socket.destroy())
     socket.on('error', () => upstream.destroy())
   })
-  return new Promise((resolve) => server.listen(listenPort, '127.0.0.1', () => resolve(server)))
+  const setMode = (next: NetworkMode): void => {
+    mode = next
+    for (const socket of sockets) socket.destroy()
+  }
+  return new Promise((resolve) => server.listen(listenPort, '127.0.0.1', () => resolve({ server, setMode })))
 }
 
 export async function startStack(port: number): Promise<E2eStack> {
@@ -142,12 +176,13 @@ export async function startStack(port: number): Promise<E2eStack> {
     workDir,
     port,
     proxyPort: port + 1,
+    setNetwork: (mode) => proxy.setMode(mode),
     client,
     socketPath,
     async stop() {
       client.close()
-      proxy.closeAllConnections()
-      await new Promise<void>((resolve) => proxy.close(() => resolve()))
+      proxy.server.closeAllConnections()
+      await new Promise<void>((resolve) => proxy.server.close(() => resolve()))
       server.kill('SIGTERM')
       await new Promise<void>((resolve) => {
         const t = setTimeout(() => {

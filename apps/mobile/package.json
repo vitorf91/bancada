@@ -10,7 +10,7 @@
     "typecheck": "tsc -p tsconfig.json",
     "icons": "node scripts/icons.mjs",
     "e2e": "vite build && playwright test",
-    "e2e:install": "playwright install webkit"
+    "e2e:install": "playwright install chromium"
   },
   "dependencies": {
     "@xterm/xterm": "6.0.0",

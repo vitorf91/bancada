@@ -3,8 +3,9 @@
  * Phone.dc.html, herdando os tokens do mockup (Geist, cinzas neutros, raio 10 px).
  * THESIS: no bolso, só o que precisa de você; abrir uma sessão, ler e responder leva poucos toques.
  * OWN-WORLD: grafite neutro, quadrado de cor por produto (F2), âmbar = esperando você, azul = trabalhando.
- * FIRST VIEWPORT: iPhone 390x844 (mockup Phone.dc.html:30, `width: 390px; height: 844px`); a lista de sessões e o cartão
- *   de notificações cabem sem rolar; a sessão mostra o terminal, as teclas rápidas e o campo de resposta.
+ * FIRST VIEWPORT: Galaxy S25+ no Chrome do Android, 384x832 em CSS px (1080x2340 a 2.8125); o mockup Phone.dc.html:30
+ *   desenhou 390x844. A lista de sessões e o cartão de notificações cabem sem rolar; a sessão mostra o terminal, as
+ *   teclas rápidas e o campo de resposta.
  * FINISH: pareia, lista, abre a sessão, digita e vê o eco; alvos >= 44 px; console limpo; sem rolagem horizontal.
  * Todo valor de cor, raio e fonte vem daqui: os componentes só usam estes nomes.
  */

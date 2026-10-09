@@ -1,6 +1,6 @@
 import { Bell, BellRing, Info } from 'lucide-react'
 import { useState } from 'react'
-import { disablePush, enablePush, pushAvailability } from '../push.js'
+import { disablePush, enablePush, isStandalone, pushAvailability } from '../push.js'
 import { t } from '../strings.js'
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   onChange(subscribed: boolean): void
 }
 
-/** The "Ativar notificações" card. The button is the user gesture iOS requires for the permission prompt. */
+/** The "Ativar notificações" card. The permission prompt is asked from the button's click, a user gesture. */
 export function Notifications({ subscribed, onChange }: Props) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -20,7 +20,7 @@ export function Notifications({ subscribed, onChange }: Props) {
     try {
       const result = await enablePush()
       if (result === 'granted') onChange(true)
-      else setError(t.notificationsDenied)
+      else setError(t.notificationsDenied(isStandalone()))
     } catch {
       setError(t.notificationsFailed)
     } finally {
@@ -53,7 +53,7 @@ export function Notifications({ subscribed, onChange }: Props) {
         </p>
       )}
       {availability.kind === 'unsupported' && <p className="muted">{t.notificationsUnsupported}</p>}
-      {availability.kind === 'denied' && <p className="warn">{t.notificationsDenied}</p>}
+      {availability.kind === 'denied' && <p className="warn">{t.notificationsDenied(isStandalone())}</p>}
       {availability.kind === 'ready' && !subscribed && (
         <>
           <p className="muted">{t.notificationsExplain}</p>

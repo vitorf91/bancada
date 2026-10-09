@@ -23,7 +23,7 @@ Side effects to know about: answering the trust dialog records the temp folder a
 
 1. In a terminal hosted by Bancada (a pane of the desktop app, which spawns its sessions through the same pty-host; with the server of proof (d) running it also shows on the phone), `cd` into a **throwaway folder** and run `claude --remote-control`. Pick "Yes, I trust this folder".
 2. The screen prints `/remote-control is active ... https://claude.ai/code/session_<id>`.
-3. Open the Claude app on the iPhone (or claude.ai/code) with the same account: the session appears in the list. Open it.
+3. Open the Claude app on the phone (or claude.ai/code) with the same account: the session appears in the list. Open it.
 4. Send a prompt such as "reply with the word pong" **from the app**.
 5. Check that the answer appears in the app **and** in the Bancada terminal (look at it on the desktop, or on the phone PWA from proof (d)). That is the proof: one session, answered from the Claude app, hosted by Bancada.
 6. Exit with `/exit`.
