@@ -1,0 +1,15 @@
+@import "@xterm/xterm/css/xterm.css";
+
+.terminal-view {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--term-bg);
+}
+
+.terminal-view .xterm {
+  height: 100%;
+  padding: var(--term-padding, 6px 8px);
+}

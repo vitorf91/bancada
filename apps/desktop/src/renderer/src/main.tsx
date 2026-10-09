@@ -1,4 +1,7 @@
+import '@fontsource-variable/geist/wght.css'
+import '@fontsource-variable/geist-mono/wght.css'
 import 'dockview-react/dist/styles/dockview.css'
+import '@bancada/ui/terminal.css'
 import './styles/tokens.css'
 import './styles/app.css'
 import { StrictMode } from 'react'

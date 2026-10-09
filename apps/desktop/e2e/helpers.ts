@@ -3,7 +3,10 @@ import { mkdirSync, mkdtempSync, realpathSync, writeFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import { type ElectronApplication, _electron as electron } from '@playwright/test'
+import { resolveSocketPath } from '@bancada/protocol/paths'
+import { type ElectronApplication, _electron as electron, type Page } from '@playwright/test'
+// The client module alone: the package entry also imports package.json, which Playwright's loader cannot.
+import { PtyClient } from '../../../packages/pty-host/src/client.js'
 
 const appDir = path.resolve(import.meta.dirname, '..')
 // Resolved from this package so pnpm's strict layout finds the Electron binary.
@@ -105,11 +108,21 @@ function cleanEnv(extra: Record<string, string>): Record<string, string> {
   return { ...env, ...extra }
 }
 
-export function launchApp(dataDir: string, configPath: string): Promise<ElectronApplication> {
+export function launchApp(
+  dataDir: string,
+  configPath: string,
+  extraEnv: Record<string, string> = {},
+): Promise<ElectronApplication> {
   return electron.launch({
     executablePath: electronPath,
     args: [appDir],
-    env: cleanEnv({ BANCADA_DATA_DIR: dataDir, BANCADA_CONFIG: configPath }),
+    env: cleanEnv({
+      BANCADA_DATA_DIR: dataDir,
+      BANCADA_CONFIG: configPath,
+      BANCADA_TEST_HOOKS: '1',
+      SHELL: '/bin/sh',
+      ...extraEnv,
+    }),
   })
 }
 
@@ -161,4 +174,54 @@ export function outline(shape: Shape): string {
 export async function savedOutline(dataDir: string): Promise<string> {
   const board = await readSavedBoard(dataDir)
   return board ? outline(gridShape(board)) : ''
+}
+
+// --- pty-host --------------------------------------------------------------------------------------------
+
+/** A client of the data dir's pty-host, independent of the app. Rejects when no host runs. */
+export function connectToHost(dataDir: string, timeoutMs = 1500): Promise<PtyClient> {
+  return PtyClient.connect({
+    socketPath: resolveSocketPath(dataDir, process.getuid?.() ?? 0),
+    clientName: 'e2e',
+    timeoutMs,
+  })
+}
+
+/**
+ * Ends the data dir's pty-host and every session in it. With `waitMs`, waits that long for a host that may still be
+ * starting (an app closed right after launch leaves one coming up); without it a missing host is a no-op.
+ */
+export async function shutdownHost(dataDir: string, waitMs = 0): Promise<void> {
+  const deadline = Date.now() + waitMs
+  let client: PtyClient | null = null
+  for (;;) {
+    try {
+      client = await connectToHost(dataDir)
+      break
+    } catch {
+      if (Date.now() >= deadline) return
+      await new Promise((resolve) => setTimeout(resolve, 100))
+    }
+  }
+  try {
+    await client.shutdown(true)
+  } catch {
+    // the host closes the connection while it exits
+  } finally {
+    client.close()
+  }
+}
+
+// --- Terminals in the page ---------------------------------------------------------------------------------
+
+/** The text of a session's xterm buffer (scrollback included), read from the page. Needs `BANCADA_TEST_HOOKS=1`. */
+export function screenText(page: Page, sessionId: string): Promise<string> {
+  return page.evaluate((id) => {
+    const term = window.__bancadaTerminals?.[id]
+    if (!term) return ''
+    const buffer = term.buffer.active
+    const lines: string[] = []
+    for (let y = 0; y < buffer.length; y++) lines.push(buffer.getLine(y)?.translateToString(true) ?? '')
+    return lines.join('\n')
+  }, sessionId)
 }
