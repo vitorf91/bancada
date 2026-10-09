@@ -2,17 +2,28 @@
   "name": "@bancada/replay",
   "version": "0.0.0",
   "private": true,
-  "description": "Replays recorded terminal sessions against the pty-host contract (skeleton).",
+  "description": "Records, replays and generates asciicast v2 terminal sessions for benchmarks and CI.",
   "type": "module",
   "exports": "./src/index.ts",
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json"
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "record": "node scripts/record.mjs",
+    "replay": "node scripts/build.mjs && node dist/cli.mjs",
+    "generate:fixture": "node scripts/build.mjs && node dist/cli.mjs generate --seed 4 --duration 85 --cols 120 --rows 40 --out fixtures/synthetic/agent-like.cast"
   },
   "dependencies": {
-    "@bancada/protocol": "workspace:*"
+    "@bancada/protocol": "workspace:*",
+    "@xterm/headless": "6.0.0",
+    "node-pty": "1.1.0"
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "electron": "44.7.0",
+    "esbuild": "0.28.2",
     "typescript": "catalog:"
+  },
+  "bin": {
+    "replay": "./dist/cli.mjs"
   }
 }
