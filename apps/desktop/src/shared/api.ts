@@ -23,9 +23,6 @@ export const IPC = {
 /** `type` of the window message the preload posts to the page to hand over a view's MessagePort. */
 export const PORT_WINDOW_CHANNEL = 'bancada:terminal-port'
 
-/** Lines of history an attach asks for by default (measured ~4 ms to serialize, against 30 ms+ for 10,000). */
-export const DEFAULT_ATTACH_SCROLLBACK = 2000
-
 /** A saved board: dockview's own serialized layout plus a format version. */
 export interface BoardFile {
   version: 1

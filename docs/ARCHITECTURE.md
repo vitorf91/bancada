@@ -80,6 +80,8 @@ Binary frames carry terminal I/O so output never pays for base64 or JSON.
 - Visible panes attach, hidden panes detach (a tab behind another one, via dockview's visibility event) and re-attach with a fresh snapshot (`reset()` + write). An attach asks for **2000 lines** of scrollback (about 4 ms to serialize against 30 ms and more for 10,000); the full history is a later, on-demand feature.
 - **WebGL budget** (`WebglBudget` in `packages/ui`): Chromium keeps about 16 live contexts per page, and each costs GPU memory, so only the N most recently active visible terminals (focused first) use WebGL and the rest use the DOM renderer. A lost context falls back to the DOM renderer and is not retried. N and the default are set by the F0 terminal-grid proof, [docs/proofs/F0-a.md](proofs/F0-a.md).
 
+The board with four live shells (generic e2e fixture, captured by `apps/desktop/e2e/visual.spec.ts`): ![board](proofs/assets/F0-terminals-board.png)
+
 ### Main to renderer data path
 
 - Main owns one connection to the pty-host and keeps **one host attachment per session**: a second attach from the same connection replaces the first and fails with a misleading `invalid_request`. It fans the output out to one `MessageChannelMain` port per renderer view (`apps/desktop/src/main/terminal-hub.ts`).
