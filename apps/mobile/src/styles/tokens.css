@@ -1,0 +1,59 @@
+/*
+ * Lendo isto como: tela de operar (app no celular) para quem tem agentes rodando no Mac, linguagem grafite neutra do
+ * Phone.dc.html, herdando os tokens do mockup (Geist, cinzas neutros, raio 10 px).
+ * THESIS: no bolso, só o que precisa de você; abrir uma sessão, ler e responder leva poucos toques.
+ * OWN-WORLD: grafite neutro, quadrado de cor por produto (F2), âmbar = esperando você, azul = trabalhando.
+ * FIRST VIEWPORT: iPhone 390x844 (mockup Phone.dc.html:30, `width: 390px; height: 844px`); a lista de sessões e o cartão
+ *   de notificações cabem sem rolar; a sessão mostra o terminal, as teclas rápidas e o campo de resposta.
+ * FINISH: pareia, lista, abre a sessão, digita e vê o eco; alvos >= 44 px; console limpo; sem rolagem horizontal.
+ * Todo valor de cor, raio e fonte vem daqui: os componentes só usam estes nomes.
+ */
+:root {
+  color-scheme: dark;
+
+  --color-bg: #0a0b0d;
+  --color-bg-bar: #0f1114;
+  --color-surface: #121418;
+  --color-surface-raised: #181b20;
+  --color-terminal: #0d0f12;
+  --color-terminal-fg: #d9dde3;
+  --color-terminal-dim: #8a93a0;
+
+  --color-text: #e8ebef;
+  --color-text-strong: #f3f5f8;
+  --color-text-secondary: #b9c0ca;
+  --color-text-muted: #a3acb8;
+  --color-text-faint: #8a93a0;
+  --color-link: #8db8ff;
+
+  --color-border-subtle: rgb(255 255 255 / 0.07);
+  --color-border: rgb(255 255 255 / 0.1);
+  --color-border-strong: rgb(255 255 255 / 0.12);
+
+  --color-waiting: #f2b33d;
+  --color-waiting-fg: #ffd88a;
+  --color-waiting-ink: #1a1406;
+  --color-waiting-glow: rgb(242 179 61 / 0.1);
+  --color-working: #6ea8ff;
+  --color-working-fg: #b6d1ff;
+  --color-danger: #ff9b94;
+
+  --color-inverse: #e8ebef;
+  --color-inverse-ink: #0b0d10;
+  --color-session: #5b6470;
+
+  --font-sans: "Geist Variable", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "Geist Mono Variable", "SF Mono", ui-monospace, Menlo, monospace;
+
+  --radius-card: 14px;
+  --radius-control: 10px;
+  --radius-key: 9px;
+  --radius-terminal: 12px;
+  --radius-pill: 22px;
+  --radius-dot: 2px;
+
+  --target: 44px;
+  --gutter: 16px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}

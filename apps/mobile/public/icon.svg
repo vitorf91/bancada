@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>Bancada</title>
+  <rect width="512" height="512" fill="#0a0b0d"/>
+  <g fill="none" stroke="#e8ebef" stroke-width="30" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M150 180l86 76-86 76"/>
+    <path d="M276 340h94"/>
+  </g>
+  <circle cx="372" cy="176" r="26" fill="#f2b33d"/>
+</svg>
