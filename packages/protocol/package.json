@@ -1,0 +1,16 @@
+{
+  "name": "@bancada/protocol",
+  "version": "0.0.0",
+  "private": true,
+  "description": "pty-host wire protocol v1: types and constants shared by every client.",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

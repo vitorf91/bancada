@@ -1,0 +1,17 @@
+packages:
+  - apps/*
+  - packages/*
+  - tools/*
+
+# One version of each shared tool across the repo.
+# vite is pinned to 7.x because electron-vite 5 peers on vite ^5 || ^6 || ^7 (see AGENTS.md).
+catalog:
+  '@types/node': ^24.19.2
+  '@types/react': ^19.3.0
+  '@types/react-dom': ^19.3.0
+  '@vitejs/plugin-react': 5.2.0
+  react: ^19.3.0
+  react-dom: ^19.3.0
+  typescript: ^7.0.2
+  vite: 7.3.7
+  vitest: ^5.0.3

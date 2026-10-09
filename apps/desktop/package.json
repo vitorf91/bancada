@@ -1,0 +1,29 @@
+{
+  "name": "@bancada/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Bancada desktop app: Electron main process and React renderer.",
+  "type": "module",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "BANCADA_PROFILE=${BANCADA_PROFILE:-dev} electron-vite dev --ignoreConfigWarning",
+    "build": "electron-vite build --ignoreConfigWarning",
+    "typecheck": "tsc -p tsconfig.node.json --composite false && tsc -p tsconfig.web.json --composite false",
+    "e2e": "electron-vite build --ignoreConfigWarning && playwright test"
+  },
+  "dependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "electron": "44.7.0",
+    "electron-vite": "5.0.0",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

@@ -1,0 +1,20 @@
+node_modules
+out
+dist
+coverage
+.DS_Store
+logs
+*.log
+test-results
+playwright-report
+*.tsbuildinfo
+
+# Secrets and machine-local config
+.env*
+*.local.toml
+
+# Private fixtures and session recordings never enter the repo
+# (real recordings live in ~/Library/Application Support/Bancada/fixtures/)
+**/fixtures/local/
+*.cast
+!tools/replay/fixtures/synthetic/**

@@ -1,0 +1,18 @@
+{
+  "name": "@bancada/replay",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Replays recorded terminal sessions against the pty-host contract (skeleton).",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@bancada/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

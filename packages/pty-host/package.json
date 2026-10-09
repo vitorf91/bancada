@@ -1,0 +1,18 @@
+{
+  "name": "@bancada/pty-host",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Process that owns PTYs and per-session scrollback (skeleton).",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@bancada/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}
