@@ -1,5 +1,7 @@
 # Bancada
 
+> **Archived on 2026-10-10.** This project stopped after its F0 proofs ([docs/proofs/F0.md](docs/proofs/F0.md)). Its goal, whole worktrees side by side, continues as [Oficina](https://github.com/vitorf91/oficina), a fork of [Orca](https://github.com/stablyai/orca).
+
 A personal, terminal-first IDE for macOS, built for running many coding agents at once.
 
 Any terminal from any git worktree, project or product can sit side by side on the same board, with files and diffs in a side panel and a phone companion that tells you when an agent needs you. Bancada does not reimplement coding agents: Claude Code, Codex and plain shells run exactly as they do in your terminal.
